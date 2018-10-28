@@ -99,7 +99,7 @@ void loop() {
     dtostrf(temperature, 1, 2, tempString);
     Serial.print("Temperature: ");
     Serial.println(tempString);
-    client.publish("esp32/temperature", tempString);
+    client.publish("Home/Temperature/Woonkamer1", tempString);
 
     
   }
