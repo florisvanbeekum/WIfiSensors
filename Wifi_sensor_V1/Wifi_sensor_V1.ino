@@ -1,11 +1,21 @@
-/*********
-  Rui Santos
-  Complete project details at https://randomnerdtutorials.com  
-*********/
-
+/********************************************************************/
+// First we include the libraries
 #include <WiFi.h>
 #include <PubSubClient.h>
+//#include <Wire.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
+//********************************************************************/
+// Data wire is plugged into pin 15 on the Arduino
+#define ONE_WIRE_BUS 15  //data wire connected to GPIO15
+/********************************************************************/
+// Setup a oneWire instance to communicate with any OneWire devices 
+// (not just Maxim/Dallas temperature ICs)
+OneWire oneWire(ONE_WIRE_BUS);
+/********************************************************************/
+// Pass our oneWire reference to Dallas Temperature.
+DallasTemperature sensors(&oneWire);
 
 // Replace the next variables with your SSID/Password combination
 const char* ssid = "Reef19";
@@ -22,9 +32,11 @@ char msg[50];
 int value = 0;
 
 float temperature = 0;
+String Sensor_ID = "Woonkamer1";
+String JSON_Message;
 
-// LED Pin
-const int ledPin = 4;
+
+
 
 void setup() {
   Serial.begin(115200);
@@ -33,9 +45,6 @@ void setup() {
 
   setup_wifi();
   client.setServer(mqtt_server, 1883);
-
-
-  pinMode(ledPin, OUTPUT);
 }
 
 void setup_wifi() {
@@ -76,28 +85,35 @@ void reconnect() {
     }
   }
 }
+
+
 void loop() {
-  if (!client.connected()) {
-    reconnect();
-  }
-  client.loop();
+   if (!client.connected()) {
+     reconnect();
+   }
+   client.loop();
 
   long now = millis();
   if (now - lastMsg > 5000) {
     lastMsg = now;
     
+  // call sensors.requestTemperatures() to issue a global temperature
+  // request to all devices on the bus
+  /********************************************************************/
+  sensors.requestTemperatures(); // Send the command to get temperature readings
+  /********************************************************************/
+    temperature =  sensors.getTempCByIndex(0);    
 
-    temperature = 20;   
-  
-    // Convert the value to a char array
-    char tempString[8];
-    dtostrf(temperature, 1, 2, tempString);
-    Serial.print("Temperature: ");
-    Serial.println(tempString);
-    char String1[100] = "\{\"Sensor_ID\":\"Woonkamer1\",\"Temperature\":\"28.17\"\}";
-    Serial.println(String1); 
-    client.publish("Home/Temperature", String1);
-
-    
+    JSON_Message="";
+    JSON_Message += F("\{\"Sensor_ID\":\"");
+    JSON_Message += Sensor_ID;
+    JSON_Message += F("\",\"Temperature\":\"");
+    JSON_Message += String(temperature,2);
+    JSON_Message += F("\"\}");
+    int  JSON_Message_Length = JSON_Message.length() + 1;
+    char JSON_Message_Char[JSON_Message_Length];
+    JSON_Message.toCharArray(JSON_Message_Char, JSON_Message_Length);
+    Serial.println(JSON_Message_Char); 
+    client.publish("Home/Temperature", JSON_Message_Char);
   }
 }
