@@ -94,10 +94,9 @@ void loop() {
     dtostrf(temperature, 1, 2, tempString);
     Serial.print("Temperature: ");
     Serial.println(tempString);
-    char String1[50] = "\"Sensor_ID\": \"Woonkamer1\", \"Temperature\": \"28.17\"";
-//    char String1[100] = "Sensor_ID: Woonkamer1, Temperature: 28.17";
+    char String1[100] = "\{\"Sensor_ID\":\"Woonkamer1\",\"Temperature\":\"28.17\"\}";
     Serial.println(String1); 
-    client.publish("Home/Temperature/Woonkamer1", String1);
+    client.publish("Home/Temperature", String1);
 
     
   }
