@@ -93,27 +93,29 @@ void loop() {
    }
    client.loop();
 
-  long now = millis();
-  if (now - lastMsg > 5000) {
-    lastMsg = now;
-    
-  // call sensors.requestTemperatures() to issue a global temperature
-  // request to all devices on the bus
-  /********************************************************************/
-  sensors.requestTemperatures(); // Send the command to get temperature readings
-  /********************************************************************/
-    temperature =  sensors.getTempCByIndex(0);    
+   long now = millis();
+   if (now - lastMsg > 60000) 
+   {
+     lastMsg = now;
 
-    JSON_Message="";
-    JSON_Message += F("\{\"Sensor_ID\":\"");
-    JSON_Message += Sensor_ID;
-    JSON_Message += F("\",\"Temperature\":\"");
-    JSON_Message += String(temperature,2);
-    JSON_Message += F("\"\}");
-    int  JSON_Message_Length = JSON_Message.length() + 1;
-    char JSON_Message_Char[JSON_Message_Length];
-    JSON_Message.toCharArray(JSON_Message_Char, JSON_Message_Length);
-    Serial.println(JSON_Message_Char); 
-    client.publish("Home/Temperature", JSON_Message_Char);
+    
+     // call sensors.requestTemperatures() to issue a global temperature
+     // request to all devices on the bus
+     /********************************************************************/
+     sensors.requestTemperatures(); // Send the command to get temperature readings
+     /********************************************************************/
+     temperature =  sensors.getTempCByIndex(0);    
+
+     JSON_Message="";
+     JSON_Message += F("\{\"Sensor_ID\":\"");
+     JSON_Message += Sensor_ID;
+     JSON_Message += F("\",\"Temperature\":\"");
+     JSON_Message += String(temperature,2);
+     JSON_Message += F("\"\}");
+     int  JSON_Message_Length = JSON_Message.length() + 1;
+     char JSON_Message_Char[JSON_Message_Length];
+     JSON_Message.toCharArray(JSON_Message_Char, JSON_Message_Length);
+     Serial.println(JSON_Message_Char); 
+     client.publish("Home/Temperature", JSON_Message_Char);
   }
 }
