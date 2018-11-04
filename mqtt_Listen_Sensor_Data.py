@@ -9,6 +9,7 @@
 import paho.mqtt.client as mqtt
 import json
 import sqlite3
+import datetime
 
 # MQTT Settings 
 MQTT_Broker = "192.168.2.6"
@@ -50,15 +51,16 @@ def on_message(mosq, obj, msg):
         json_Dict = json.loads(msg.payload)
         SensorID = json_Dict['Sensor_ID']
         Temperature = json_Dict['Temperature']
-        
+        TimeStamp = str(datetime.datetime.now())
+ 
         print "SensorID: " + SensorID
-        #print "Data_and_Time: " + Data_and_Time 
         print "Temperature: " + Temperature
+        print "Data_and_Time: " + TimeStamp 
          
- #       dbObj = DatabaseManager()
- #       dbObj.add_del_update_db_record("insert into Temperature_Data (SensorID, Date_n_Time, Temperature) values (?,?,?)",[SensorID, Data_and_Time, Temperature])
+        dbObj = DatabaseManager()
+        dbObj.add_del_update_db_record("insert into Temperature_Data (SensorID, Date_n_Time, Temperature) values (?,?,?)",[SensorID, Data_and_Time, Temperature])
         del dbObj
- #       print "Inserted Temperature Data into Database."
+        print "Inserted Temperature Data into Database."
         print ""
  
 def on_subscribe(mosq, obj, mid, granted_qos):
