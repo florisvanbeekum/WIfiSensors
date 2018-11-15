@@ -23,7 +23,7 @@ const char* password = "fl70an73ma03da05";
 
 // Add your MQTT Broker IP address, example:
 //const char* mqtt_server = "192.168.2.6";
-const char* mqtt_server = "mqtt.reef1";
+const char* mqtt_server = "mqtt.reef19.nl";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -74,7 +74,7 @@ void reconnect() {
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (client.connect(Woonkamer2)) {
+    if (client.connect("Woonkamer2")) {
       Serial.println("connected");
     } else {
       Serial.print("failed, rc=");

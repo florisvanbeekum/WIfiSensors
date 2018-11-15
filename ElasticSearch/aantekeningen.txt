@@ -1,0 +1,23 @@
+Downloaden van een nieuwste node red docker:
+
+docker run -it -p 1880:1880 --name mynodered nodered/node-red-docker
+
+Show alle indexen:
+ curl -X GET "localhost:9200/_cat/indices?v"
+
+Show beschrijving van een index:
+curl -X GET "localhost:9200/index_floris/1?pretty"
+
+Geef alle records:
+curl -X GET "http://localhost:9200/index_floris/_search?pretty=true&q=*:*"
+curl -X GET "http://localhost:9200/home_temperature/_search?pretty=true&q=*:*"
+
+Count alles record
+curl -X GET "http://localhost:9200/index_floris/_count"
+curl -X GET "http://localhost:9200/home_temperature/_count"
+
+Delete index:
+ curl -X DELETE "localhost:9200/index_floris?pretty"
+curl -X DELETE "localhost:9200/home_temperature?pretty"
+
+
